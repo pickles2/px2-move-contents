@@ -29,6 +29,22 @@ class px2agent{
 		$this->utils = $utils;
 	}
 
+	/**
+	 * コンテンツの専用リソースディレクトリのパスを得る
+	 * @param  string $path_content コンテンツのパス
+	 * @return string               リソースディレクトリのパス
+	 */
+	public function get_path_files( $path_content ){
+		$path_files = false;
+		if( is_string($this->px) ){
+			// EntryScript のパスを受け取った場合
+			$path_files = $this->utils->execute_pickles2_cmd($path_content.'?PX=api.get.path_files');
+		}elseif( is_object($this->px) ){
+			// Pickles 2 オブジェクト を受け取った場合
+			$path_files = json_decode($this->px->internal_sub_request($path_content.'?PX=api.get.path_files'));
+		}
+		return $path_files;
+	}
 
 	/**
 	 * Pickles 2 の `get_realpath_docroot()` を仲介する
@@ -53,7 +69,6 @@ class px2agent{
 		if( is_string($this->px) ){
 			// EntryScript のパスを受け取った場合
 			$path_controot = $this->utils->execute_pickles2_cmd('/?PX=api.get.path_controot');
-			$path_controot = json_decode($path_controot);
 		}elseif( is_object($this->px) ){
 			// Pickles 2 オブジェクト を受け取った場合
 			$path_controot = $this->px->get_path_controot();

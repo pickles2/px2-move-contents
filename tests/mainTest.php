@@ -22,7 +22,12 @@ class mainTest extends PHPUnit_Framework_TestCase{
 
 			$result = $px2moveContents->run(__DIR__.'/testdata/csv/test1.csv');
 
+			clearstatcache();
 			$this->assertTrue( $result );
+			$this->assertFalse( is_file(__DIR__.'/testdata/standard/test1/index.html') );
+			$this->assertFalse( is_dir(__DIR__.'/testdata/standard/test1/index_files/') );
+			$this->assertTrue( is_file(__DIR__.'/testdata/standard/test_tmp_after/abc.html') );
+			$this->assertTrue( is_dir(__DIR__.'/testdata/standard/test_tmp_after/abc_files/') );
 		});
 	}
 
@@ -35,7 +40,12 @@ class mainTest extends PHPUnit_Framework_TestCase{
 
 		$result = $px2moveContents->run(__DIR__.'/testdata/csv/fin.csv');
 
+		clearstatcache();
 		$this->assertTrue( $result );
+		$this->assertTrue( is_file(__DIR__.'/testdata/standard/test1/index.html') );
+		$this->assertTrue( is_dir(__DIR__.'/testdata/standard/test1/index_files/') );
+		$this->assertFalse( is_file(__DIR__.'/testdata/standard/test_tmp_after/abc.html') );
+		$this->assertFalse( is_dir(__DIR__.'/testdata/standard/test_tmp_after/abc_files/') );
 	}
 
 }
