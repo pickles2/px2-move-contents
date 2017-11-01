@@ -26,8 +26,12 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			$this->assertTrue( $result );
 			$this->assertFalse( is_file(__DIR__.'/testdata/standard/test1/index.html') );
 			$this->assertFalse( is_dir(__DIR__.'/testdata/standard/test1/index_files/') );
+			$this->assertFalse( is_file(__DIR__.'/testdata/standard/test1/test1.html.md') );
+			$this->assertFalse( is_dir(__DIR__.'/testdata/standard/test1/test1_files/') );
 			$this->assertTrue( is_file(__DIR__.'/testdata/standard/test_tmp_after/abc.html') );
 			$this->assertTrue( is_dir(__DIR__.'/testdata/standard/test_tmp_after/abc_files/') );
+			$this->assertTrue( is_file(__DIR__.'/testdata/standard/test_tmp_after/index.html.md') );
+			$this->assertTrue( is_dir(__DIR__.'/testdata/standard/test_tmp_after/index_files/') );
 		});
 	}
 
@@ -44,8 +48,12 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$this->assertTrue( $result );
 		$this->assertTrue( is_file(__DIR__.'/testdata/standard/test1/index.html') );
 		$this->assertTrue( is_dir(__DIR__.'/testdata/standard/test1/index_files/') );
+		$this->assertTrue( is_file(__DIR__.'/testdata/standard/test1/test1.html.md') );
+		$this->assertTrue( is_dir(__DIR__.'/testdata/standard/test1/test1_files/') );
 		$this->assertFalse( is_file(__DIR__.'/testdata/standard/test_tmp_after/abc.html') );
 		$this->assertFalse( is_dir(__DIR__.'/testdata/standard/test_tmp_after/abc_files/') );
+		$this->assertFalse( is_file(__DIR__.'/testdata/standard/test_tmp_after/index.html.md') );
+		$this->assertFalse( is_dir(__DIR__.'/testdata/standard/test_tmp_after/index_files/') );
 	}
 
 }
