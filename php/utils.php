@@ -29,7 +29,23 @@ class utils{
 	 * Pickles 2 を実行する
 	 */
 	public function execute_pickles2_cmd($path){
-		$result = $this->cmd(array('php', $this->px, $path));
+		$cmd = array();
+		if( strlen($this->options->php->bin) ){
+			array_push($cmd, $this->options->php->bin);
+		}else{
+			array_push($cmd, 'php');
+		}
+		if( strlen($this->options->php->ini) ){
+			array_push($cmd, '-c');
+			array_push($cmd, $this->options->php->ini);
+		}
+		if( strlen($this->options->php->extension_dir) ){
+			array_push($cmd, '-d');
+			array_push($cmd, $this->options->php->extension_dir);
+		}
+		array_push($cmd, $this->px);
+		array_push($cmd, $path);
+		$result = $this->cmd($cmd);
 		$result = json_decode($result);
 		return $result;
 	}

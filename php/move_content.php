@@ -78,9 +78,6 @@ class move_content{
 			)
 		);
 
-		var_dump($realpathsFromTo);
-
-
 		// 実際の移動処理
 		foreach( $realpathsFromTo as $fromTo ){
 			$this->main->fs()->rename_f(

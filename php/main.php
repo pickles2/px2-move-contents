@@ -39,7 +39,24 @@ class main{
 	 */
 	public function __construct($px, $options = array()){
 		$this->px = $px;
+		$options = json_decode(json_encode($options));
+		if(!is_object($options)){
+			$options = json_decode('{}');
+		}
+		if(!is_object($options->php)){
+			$options->php = json_decode('{}');
+		}
+		if(!strlen($options->php->bin)){
+			$options->php->bin = null;
+		}
+		if(!strlen($options->php->ini)){
+			$options->php->ini = null;
+		}
+		if(!strlen($options->php->extension_dir)){
+			$options->php->extension_dir = null;
+		}
 		$this->options = $options;
+
 		$this->fs = new \tomk79\filesystem();
 		$this->utils = new utils($px, $options);
 		$this->px2agent = new px2agent($px, $options, $this->utils);
@@ -73,6 +90,14 @@ class main{
 	 */
 	public function px2agent(){
 		return $this->px2agent;
+	}
+
+	/**
+	 * $options を取得する
+	 * @return object $options
+	 */
+	public function options(){
+		return $this->options;
 	}
 
 	/**
