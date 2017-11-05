@@ -21,6 +21,7 @@ class px2agent{
 	/**
 	 * constructor
 	 * @param mixed $px Pickles 2 オブジェクト または EntryScript のパス
+	 * @param array $options オプション
 	 * @param object $utils ユーティリティ
 	 */
 	public function __construct($px, $options, $utils){
