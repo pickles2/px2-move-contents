@@ -31,7 +31,8 @@
         "files": [
             "php/main.php",
             "php/move_content.php",
-            "php/resolve_path.php",
+            "php/path_detector.php",
+            "php/find_contents.php",
             "php/px2agent.php",
             "php/utils.php",
             "php/simple_html_dom.php"

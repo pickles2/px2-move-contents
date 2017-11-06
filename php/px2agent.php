@@ -77,4 +77,19 @@ class px2agent{
 		return $path_controot;
 	}
 
+	/**
+	 * Pickles 2 の `get_realpath_homedir()` を仲介する
+	 * @return string コンテンツルートディレクトリのパス
+	 */
+	public function get_realpath_homedir(){
+		if( is_string($this->px) ){
+			// EntryScript のパスを受け取った場合
+			$path_controot = $this->utils->execute_pickles2_cmd('/?PX=api.get.realpath_homedir');
+		}elseif( is_object($this->px) ){
+			// Pickles 2 オブジェクト を受け取った場合
+			$path_controot = $this->px->get_realpath_homedir();
+		}
+		return $path_controot;
+	}
+
 }

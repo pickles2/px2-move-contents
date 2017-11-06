@@ -28,9 +28,10 @@ class main{
 	private $px2agent;
 
 	/** Pickles 2 の環境情報 */
-	private $realpath_docroot;
-	private $path_controot;
-	private $realpath_controot;
+	private $realpath_docroot,
+	        $path_controot,
+	        $realpath_controot,
+	        $realpath_homedir;
 
 	/**
 	 * constructor
@@ -64,6 +65,7 @@ class main{
 		$this->realpath_docroot = $this->px2agent->get_realpath_docroot();
 		$this->path_controot = $this->px2agent->get_path_controot();
 		$this->realpath_controot = $this->fs->get_realpath($this->realpath_docroot.$this->path_controot);
+		$this->realpath_homedir = $this->px2agent->get_realpath_homedir();
 
 		$this->move_content = new move_content($this);
 	}
@@ -109,6 +111,7 @@ class main{
 		$rtn['realpath_docroot'] = $this->realpath_docroot;
 		$rtn['path_controot'] = $this->path_controot;
 		$rtn['realpath_controot'] = $this->realpath_controot;
+		$rtn['realpath_homedir'] = $this->realpath_homedir;
 		return $rtn;
 	}
 
