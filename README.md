@@ -19,14 +19,8 @@ Pickles 2 の既に制作済みのコンテンツの物理パスを変更(移動
 
 ```
 {
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://github.com/tomk79/px2-move-contents.git"
-        }
-    ],
     "require": {
-        "tomk79/px2-move-contents": "dev-master"
+        "pickles2/px2-move-contents": "dev-master"
     }
 }
 ```
@@ -90,7 +84,7 @@ A列のパスにあるコンテンツファイルを探し、B列のパスに移
 
 ## 更新履歴 - Change log
 
-### tomk79/px2-move-contents v0.0.1 (20??年??月??日)
+### pickles2/px2-move-contents v0.0.1 (20??年??月??日)
 
 - 初回リリース
 
