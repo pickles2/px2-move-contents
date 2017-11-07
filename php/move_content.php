@@ -163,12 +163,21 @@ class move_content{
 				}
 
 				$path_type = 'relative';
-				if( preg_match('/^[a-zA-Z0-9]+\:\/\//', $path) ){
+				if( preg_match('/^\<\?(?:php)/', $path) ){
+					$path_type = 'php';
+					return $path;
+				}elseif( preg_match('/^[a-zA-Z0-9]+\:\/\//', $path) ){
 					$path_type = 'url';
 					return $path; // TODO: 未実装
 				}elseif( preg_match('/^\/\//', $path) ){
 					$path_type = 'absolute_double_slashes';
 					return $path; // TODO: 未実装
+				}elseif( preg_match('/^data\:/i', $path) ){
+					$path_type = 'data';
+					return $path;
+				}elseif( preg_match('/^javascript\:/i', $path) ){
+					$path_type = 'javascript';
+					return $path;
 				}elseif( preg_match('/^\//', $path) ){
 					$path_type = 'absolute';
 					$path_abs = $this->main->fs()->get_realpath($path, dirname($from));
@@ -247,12 +256,21 @@ class move_content{
 				}
 
 				$path_type = 'relative';
-				if( preg_match('/^[a-zA-Z0-9]+\:\/\//', $path) ){
+				if( preg_match('/^\<\?(?:php)/', $path) ){
+					$path_type = 'php';
+					return $path;
+				}elseif( preg_match('/^[a-zA-Z0-9]+\:\/\//', $path) ){
 					$path_type = 'url';
 					return $path; // TODO: 未実装
 				}elseif( preg_match('/^\/\//', $path) ){
 					$path_type = 'absolute_double_slashes';
 					return $path; // TODO: 未実装
+				}elseif( preg_match('/^data\:/i', $path) ){
+					$path_type = 'data';
+					return $path;
+				}elseif( preg_match('/^javascript\:/i', $path) ){
+					$path_type = 'javascript';
+					return $path;
 				}elseif( preg_match('/^\//', $path) ){
 					$path_type = 'absolute';
 					$path_abs = $this->main->fs()->get_realpath($path, dirname('/'.$path_current));

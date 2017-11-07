@@ -7,6 +7,12 @@ Test Data
 		<dd><a href="./index.html">./index.html</a></dd>
 	<dt>リンク - 相対パス (./; index.html を省略)</dt>
 		<dd><a href="./">./</a></dd>
+	<dt>JavaScript</dt>
+		<dd><a href="javascript:alert(123);">javascript</a></dd>
+	<dt>data scheme</dt>
+		<dd><img src="data:" alt="data scheme" /></dd>
+	<dt>PHP</dt>
+		<dd><img src="<?php $px->path_files("/image.gif") ?>" alt="php" /></dd>
 	<dt>相対パス</dt>
 		<dd><img src="test1_files/image.gif" alt="relative" /></dd>
 	<dt>相対パス (./)</dt>

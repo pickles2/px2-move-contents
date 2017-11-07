@@ -35,12 +35,18 @@ class mainTest extends PHPUnit_Framework_TestCase{
 
 			$src = $this->fs->read_file(__DIR__.'/testdata/standard/test_tmp_after/abc.html');
 			// var_dump($src);
+			$this->assertTrue( 0 < strpos( $src, '<a href="javascript:alert(123);">javascript</a>' ) );
+			$this->assertTrue( 0 < strpos( $src, '<img src="data:" alt="data scheme" />' ) );
+			$this->assertTrue( 0 < strpos( $src, '<img src="<?php $px->path_files("/image.gif") ?>" alt="php" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="abc_files/image.gif" alt="relative" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="./abc_files/image.gif" alt="relative_dot_slash" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="/test_tmp_after/abc_files/image.gif" alt="absolute" />' ) );
 
 			$src = $this->fs->read_file(__DIR__.'/testdata/standard/test_tmp_after/index.html.md');
 			// var_dump($src);
+			$this->assertTrue( 0 < strpos( $src, '<a href="javascript:alert(123);">javascript</a>' ) );
+			$this->assertTrue( 0 < strpos( $src, '<img src="data:" alt="data scheme" />' ) );
+			$this->assertTrue( 0 < strpos( $src, '<img src="<?php $px->path_files("/image.gif") ?>" alt="php" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="index_files/image.gif" alt="relative" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="./index_files/image.gif" alt="relative_dot_slash" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="/test_tmp_after/index_files/image.gif" alt="absolute" />' ) );
@@ -66,6 +72,24 @@ class mainTest extends PHPUnit_Framework_TestCase{
 		$this->assertFalse( is_dir(__DIR__.'/testdata/standard/test_tmp_after/abc_files/') );
 		$this->assertFalse( is_file(__DIR__.'/testdata/standard/test_tmp_after/index.html.md') );
 		$this->assertFalse( is_dir(__DIR__.'/testdata/standard/test_tmp_after/index_files/') );
+
+		$src = $this->fs->read_file(__DIR__.'/testdata/standard/test1/index.html');
+		// var_dump($src);
+		$this->assertTrue( 0 < strpos( $src, '<a href="javascript:alert(123);">javascript</a>' ) );
+		$this->assertTrue( 0 < strpos( $src, '<img src="data:" alt="data scheme" />' ) );
+		$this->assertTrue( 0 < strpos( $src, '<img src="<?php $px->path_files("/image.gif") ?>" alt="php" />' ) );
+		$this->assertTrue( 0 < strpos( $src, '<img src="index_files/image.gif" alt="relative" />' ) );
+		$this->assertTrue( 0 < strpos( $src, '<img src="./index_files/image.gif" alt="relative_dot_slash" />' ) );
+		$this->assertTrue( 0 < strpos( $src, '<img src="/test1/index_files/image.gif" alt="absolute" />' ) );
+
+		$src = $this->fs->read_file(__DIR__.'/testdata/standard/test1/test1.html.md');
+		// var_dump($src);
+		$this->assertTrue( 0 < strpos( $src, '<a href="javascript:alert(123);">javascript</a>' ) );
+		$this->assertTrue( 0 < strpos( $src, '<img src="data:" alt="data scheme" />' ) );
+		$this->assertTrue( 0 < strpos( $src, '<img src="<?php $px->path_files("/image.gif") ?>" alt="php" />' ) );
+		$this->assertTrue( 0 < strpos( $src, '<img src="test1_files/image.gif" alt="relative" />' ) );
+		$this->assertTrue( 0 < strpos( $src, '<img src="./test1_files/image.gif" alt="relative_dot_slash" />' ) );
+		$this->assertTrue( 0 < strpos( $src, '<img src="/test1/test1_files/image.gif" alt="absolute" />' ) );
 	}
 
 }
