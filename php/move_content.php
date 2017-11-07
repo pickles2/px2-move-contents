@@ -163,7 +163,7 @@ class move_content{
 				}
 
 				$path_type = 'relative';
-				if( preg_match('/^\<\?(?:php)/', $path) ){
+				if( preg_match('/^\<\?(?:php|\=)?/', $path) ){
 					$path_type = 'php';
 					return $path;
 				}elseif( preg_match('/^[a-zA-Z0-9]+\:\/\//', $path) ){
@@ -256,7 +256,7 @@ class move_content{
 				}
 
 				$path_type = 'relative';
-				if( preg_match('/^\<\?(?:php)/', $path) ){
+				if( preg_match('/^\<\?(?:php|\=)?/', $path) ){
 					$path_type = 'php';
 					return $path;
 				}elseif( preg_match('/^[a-zA-Z0-9]+\:\/\//', $path) ){

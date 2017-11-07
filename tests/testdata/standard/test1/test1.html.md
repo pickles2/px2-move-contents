@@ -1,3 +1,7 @@
+<script src="test1_files/script.js"></script>
+<script src="<?= htmlspecialchars( $px->path_files('/script.js') ) ?>"></script>
+
+
 Test Data
 
 <dl>

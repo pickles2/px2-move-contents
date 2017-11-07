@@ -1,3 +1,6 @@
+<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files('/style.css') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), 'head' );?>
+<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files('/script.js') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), 'foot' );?>
+
 <p>Test Data</p>
 <dl>
 	<dt>リンク - 相対パス</dt>
