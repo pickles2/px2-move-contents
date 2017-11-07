@@ -40,17 +40,24 @@ class move_content{
 		// 対象コンテンツファイルのリストを作成する
 		$pathsFromTo = $this->make_content_file_list($from, $to);
 		if(!is_array($pathsFromTo)){
+			$this->main->stdout('contents not found.'."\n");
 			return false;
 		}
 
 		// 対象コンテンツファイルを移動する
+		$this->main->stdout('target files:'."\n");
 		$this->move_content_files($pathsFromTo);
+		$this->main->stdout("\n");
 
 		// コンテンツに記述されたリソースファイルのリンクを解決する
+		$this->main->stdout('resolve links ');
 		$this->resolve_content_resource_links($pathsFromTo, $from, $to);
+		$this->main->stdout(' done.'."\n");
 
 		// コンテンツの被リンクを解決する
+		$this->main->stdout('resolve incoming links ');
 		$this->resolve_content_incoming_links($from, $to);
+		$this->main->stdout(' done.'."\n");
 
 		return $rtn;
 	}
@@ -121,6 +128,7 @@ class move_content{
 
 		// 実際の移動処理
 		foreach( $pathsFromTo as $fromTo ){
+			$this->main->stdout('    '.implode(' -> ', $fromTo)."\n");
 			$this->main->fs()->rename_f(
 				$this->realpath_controot.$fromTo[0],
 				$this->realpath_controot.$fromTo[1]
@@ -146,6 +154,7 @@ class move_content{
 			$realpath_file = $this->realpath_controot.$fromTo[1];
 
 			$bin = $this->main->fs()->read_file( $realpath_file );
+			$bin_md5 = md5($bin);
 
 			$path_detector = new path_detector($this->main);
 			$bin = $path_detector->path_detect_in_html($bin, function( $path ) use ($from, $to){
@@ -204,7 +213,10 @@ class move_content{
 				return $rtn;
 			});
 
-			$result = $this->main->fs()->save_file( $realpath_file, $bin );
+			if( $bin_md5 !== md5($bin) ){
+				$this->main->fs()->save_file( $realpath_file, $bin );
+				$this->main->stdout('.');
+			}
 		}
 		return true;
 	}
@@ -221,6 +233,7 @@ class move_content{
 
 			$realpath_file = $this->realpath_controot.$path_current;
 			$bin = $this->main->fs()->read_file( $realpath_file );
+			$bin_md5 = md5($bin);
 
 			$path_detector = new path_detector($this->main);
 			$bin = $path_detector->path_detect_in_html($bin, function( $path ) use ($path_current, $from, $to){
@@ -277,7 +290,10 @@ class move_content{
 				return $rtn;
 			});
 
-			$result = $this->main->fs()->save_file( $realpath_file, $bin );
+			if( $bin_md5 !== md5($bin) ){
+				$this->main->fs()->save_file( $realpath_file, $bin );
+				$this->main->stdout('.');
+			}
 		});
 		return true;
 	}

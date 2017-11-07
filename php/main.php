@@ -121,17 +121,50 @@ class main{
 	 * @return boolean              実行結果
 	 */
 	public function run($realpath_csv){
+		$this->stdout('=-=-=-=-=-=-=-=-=-=-=-=-='."\n");
+		$this->stdout('px2-move-contents start'."\n");
+		$this->stdout('- CSV: '.$realpath_csv."\n");
+		if(is_string($this->px)){
+			$this->stdout('- EntryScript: '.$this->px."\n");
+		}
+		$this->stdout('- realpath_docroot: '.$this->realpath_docroot."\n");
+		$this->stdout('- path_controot: '.$this->path_controot."\n");
+		$this->stdout('- realpath_controot: '.$this->realpath_controot."\n");
+		$this->stdout('- realpath_homedir: '.$this->realpath_homedir."\n");
+		$this->stdout("\n");
+		$this->stdout('-----------------'."\n");
+		$this->stdout("\n");
+
 		if( !is_file($realpath_csv) || !is_readable($realpath_csv) ){
+			$this->stdout('CSV is not exists, or not readable.'."\n");
 			return false;
 		}
 		$csv = $this->fs->read_csv($realpath_csv);
 
 		foreach( $csv as list($from, $to) ){
 			// 1件ずつ処理
+			$this->stdout('*********'."\n");
+			$this->stdout('*** '.$from.' => '.$to."\n");
 			$this->move_content->move($from, $to);
+			$this->stdout("\n");
 		}
 
+		$this->stdout("\n");
+		$this->stdout('-----------------'."\n");
+		$this->stdout('done.'."\n");
+		$this->stdout("\n");
 		return true;
+	}
+
+	/**
+	 * 標準出力
+	 * @param  string $msg 出力するメッセージ
+	 * @return void このメソッドは値を返しません。
+	 */
+	public function stdout($msg){
+		echo $msg;
+		flush();
+		return;
 	}
 
 }
