@@ -23,4 +23,8 @@ Test Data
 		<dd><img src="./test1_files/image.gif" alt="relative_dot_slash" /></dd>
 	<dt>絶対パス</dt>
 		<dd><img src="/test1/test1_files/image.gif" alt="absolute" /></dd>
+	<dt>パスの前後に改行が含まれる</dt>
+		<dd><img src="
+			test1_files/image.gif
+		" alt="br" /></dd>
 </dl>
