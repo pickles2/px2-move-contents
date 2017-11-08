@@ -141,8 +141,10 @@ class main{
 		}
 		$csv = $this->fs->read_csv($realpath_csv);
 
-		foreach( $csv as list($from, $to) ){
+		foreach( $csv as $csv_row ){
 			// 1件ずつ処理
+			$from = $csv_row[0];
+			$to = $csv_row[1];
 			$this->stdout('*********'."\n");
 			$this->stdout('*** '.$from.' => '.$to."\n");
 			$this->move_content->move($from, $to);
