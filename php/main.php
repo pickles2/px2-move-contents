@@ -41,19 +41,19 @@ class main{
 	public function __construct($px, $options = array()){
 		$this->px = $px;
 		$options = json_decode(json_encode($options));
-		if(!is_object($options)){
+		if(!@is_object($options)){
 			$options = json_decode('{}');
 		}
-		if(!is_object($options->php)){
+		if(!@is_object($options->php)){
 			$options->php = json_decode('{}');
 		}
-		if(!strlen($options->php->bin)){
+		if(!@strlen($options->php->bin)){
 			$options->php->bin = null;
 		}
-		if(!strlen($options->php->ini)){
+		if(!@strlen($options->php->ini)){
 			$options->php->ini = null;
 		}
-		if(!strlen($options->php->extension_dir)){
+		if(!@strlen($options->php->extension_dir)){
 			$options->php->extension_dir = null;
 		}
 		$this->options = $options;

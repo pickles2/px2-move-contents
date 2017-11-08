@@ -201,6 +201,7 @@ class move_content{
 				}else{
 					$new_path_abs = $this->main->fs()->get_realpath($path_abs);
 				}
+				$new_path_abs = $this->main->fs()->normalize_path($new_path_abs);
 
 				$rtn = $path;
 				switch($path_type){
@@ -213,11 +214,13 @@ class move_content{
 						break;
 					case 'relative_dot_slash':
 						$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname($to));
+						$path_rel = $this->main->fs()->normalize_path($path_rel);
 						$path_rel = './'.preg_replace('/^\.\//s', '', $path_rel);
 						$rtn = $path_rel;
 						break;
 					case 'relative':
 						$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname($to));
+						$path_rel = $this->main->fs()->normalize_path($path_rel);
 						$path_rel = preg_replace('/^\.\//s', '', $path_rel);
 						$rtn = $path_rel;
 						break;
@@ -291,6 +294,7 @@ class move_content{
 				}
 
 				$new_path_abs = $this->main->fs()->get_realpath($path_abs);
+				$new_path_abs = $this->main->fs()->normalize_path($new_path_abs);
 
 				$rtn = $path;
 				switch($path_type){
@@ -303,11 +307,13 @@ class move_content{
 						break;
 					case 'relative_dot_slash':
 						$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname('/'.$path_current));
+						$path_rel = $this->main->fs()->normalize_path($path_rel);
 						$path_rel = './'.preg_replace('/^\.\//s', '', $path_rel);
 						$rtn = $path_rel;
 						break;
 					case 'relative':
 						$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname('/'.$path_current));
+						$path_rel = $this->main->fs()->normalize_path($path_rel);
 						$path_rel = preg_replace('/^\.\//s', '', $path_rel);
 						$rtn = $path_rel;
 						break;

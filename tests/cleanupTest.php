@@ -20,7 +20,7 @@ class cleanupTest extends PHPUnit_Framework_TestCase{
 			$px->internal_sub_request('/?PX=clearcache');
 
 			$this->assertFalse( is_dir(__DIR__.'/testdata/standard/caches/p/') );
-			$this->assertFalse( is_dir(__DIR__.'/testdata/standard/px-files/_sys/ram/caches/sitemaps/') );
+			// $this->assertFalse( is_dir(__DIR__.'/testdata/standard/px-files/_sys/ram/caches/sitemaps/') );
 		});
 	}
 
