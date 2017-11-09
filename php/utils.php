@@ -55,7 +55,12 @@ class utils{
 	 */
 	public function cmd($php_command){
 		foreach($php_command as $key=>$row){
-			$php_command[$key] = escapeshellarg($php_command[$key]);
+			if($row == 'php'){
+				$php_command[$key] = addslashes($php_command[$key]);
+					// ↑ Windows でこれを `escapeshellarg()` でエスケープすると、なぜかエラーに。
+			}else{
+				$php_command[$key] = escapeshellarg($php_command[$key]);
+			}
 		}
 		$cmd = implode( ' ', $php_command );
 
