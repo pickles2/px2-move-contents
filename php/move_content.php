@@ -89,8 +89,8 @@ class move_content{
 				array_push(
 					$pathsFromTo,
 					array(
-						$this->main->fs()->get_realpath($from),
-						$this->main->fs()->get_realpath($to)
+						$this->main->fs()->normalize_path($this->main->fs()->get_realpath($from)),
+						$this->main->fs()->normalize_path($this->main->fs()->get_realpath($to))
 					)
 				);
 				continue;
@@ -100,8 +100,8 @@ class move_content{
 				array_push(
 					$pathsFromTo,
 					array(
-						$this->main->fs()->get_realpath($from.'.'.$matched[1]),
-						$this->main->fs()->get_realpath($to.'.'.$matched[1])
+						$this->main->fs()->normalize_path($this->main->fs()->get_realpath($from.'.'.$matched[1])),
+						$this->main->fs()->normalize_path($this->main->fs()->get_realpath($to.'.'.$matched[1]))
 					)
 				);
 				continue;
@@ -112,8 +112,8 @@ class move_content{
 		array_push(
 			$pathsFromTo,
 			array(
-				$this->main->fs()->get_realpath($this->main->px2agent()->get_path_files($from)),
-				$this->main->fs()->get_realpath($this->main->px2agent()->get_path_files($to))
+				$this->main->fs()->normalize_path($this->main->fs()->get_realpath($this->main->px2agent()->get_path_files($from))),
+				$this->main->fs()->normalize_path($this->main->fs()->get_realpath($this->main->px2agent()->get_path_files($to)))
 			)
 		);
 		return $pathsFromTo;
@@ -192,6 +192,7 @@ class move_content{
 					$path_type = 'relative';
 					$path_abs = $this->main->fs()->get_realpath($path, dirname($from));
 				}
+				$path_abs = $this->main->fs()->normalize_path($path_abs);
 
 				$new_path_abs = $path_abs;
 				$from_files = $this->main->px2agent()->get_path_files($from);
@@ -292,6 +293,7 @@ class move_content{
 					$path_type = 'relative';
 					$path_abs = $this->main->fs()->get_realpath($path, dirname('/'.$path_current));
 				}
+				$path_abs = $this->main->fs()->normalize_path($path_abs);
 
 				$new_path_abs = $this->main->fs()->get_realpath($path_abs);
 				$new_path_abs = $this->main->fs()->normalize_path($new_path_abs);

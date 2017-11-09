@@ -62,10 +62,10 @@ class main{
 		$this->utils = new utils($px, $options);
 		$this->px2agent = new px2agent($px, $options, $this->utils);
 
-		$this->realpath_docroot = $this->px2agent->get_realpath_docroot();
-		$this->path_controot = $this->px2agent->get_path_controot();
-		$this->realpath_controot = $this->fs->get_realpath($this->realpath_docroot.$this->path_controot);
-		$this->realpath_homedir = $this->px2agent->get_realpath_homedir();
+		$this->realpath_docroot = $this->fs->normalize_path($this->px2agent->get_realpath_docroot());
+		$this->path_controot = $this->fs->normalize_path($this->px2agent->get_path_controot());
+		$this->realpath_controot = $this->fs->normalize_path($this->fs->get_realpath($this->realpath_docroot.$this->path_controot));
+		$this->realpath_homedir = $this->fs->normalize_path($this->px2agent->get_realpath_homedir());
 
 		$this->move_content = new move_content($this);
 	}
@@ -125,7 +125,7 @@ class main{
 		$this->stdout('px2-move-contents start'."\n");
 		$this->stdout('- CSV: '.$realpath_csv."\n");
 		if(is_string($this->px)){
-			$this->stdout('- EntryScript: '.$this->px."\n");
+			$this->stdout('- EntryScript: '.$this->fs->normalize_path($this->px)."\n");
 		}
 		$this->stdout('- realpath_docroot: '.$this->realpath_docroot."\n");
 		$this->stdout('- path_controot: '.$this->path_controot."\n");
