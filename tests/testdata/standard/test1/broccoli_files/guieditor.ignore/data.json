@@ -1,46 +1,46 @@
 {
- "bowl": {
-  "main": {
-   "modId": "_sys/root",
-   "fields": {
-    "main": [
-     {
-      "modId": "FESS:units/cols2",
-      "fields": {
-       "column1": [
-        {
-         "modId": "PlainHTMLElements:PlainHTML/MultiText",
-         "fields": {
-          "main": {
-           "src": "## broccoli * markdown\n\n- [test1/index.html](./test1/index.html)\n- [test1/test1.html](./test1/test1.html)\n- <a href=\"./test1/\">test1/</a>\n",
-           "editor": "markdown"
-          }
-         },
-         "anchor": "",
-         "dec": ""
+    "bowl": {
+        "main": {
+            "modId": "_sys/root",
+            "fields": {
+                "main": [
+                    {
+                        "modId": "FESS:units/cols2",
+                        "fields": {
+                            "column1": [
+                                {
+                                    "modId": "PlainHTMLElements:PlainHTML/MultiText",
+                                    "fields": {
+                                        "main": {
+                                            "src": "## broccoli * markdown\n\n- [test1/index.html](./test1/index.html)\n- [test1/test1.html](./test1/test1.html)\n- <a href=\"./test1/\">test1/</a>\n",
+                                            "editor": "markdown"
+                                        }
+                                    },
+                                    "anchor": "",
+                                    "dec": ""
+                                }
+                            ],
+                            "column2": [
+                                {
+                                    "modId": "PlainHTMLElements:PlainHTML/image",
+                                    "fields": {
+                                        "href": "",
+                                        "image_src": {
+                                            "resKey": "0ba4c098e65dcf286d15334226c2fcf5",
+                                            "path": "./broccoli_files/resources/photo002-256px.gif",
+                                            "resType": "",
+                                            "webUrl": ""
+                                        },
+                                        "alt_text": ""
+                                    },
+                                    "anchor": "",
+                                    "dec": ""
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
         }
-       ],
-       "column2": [
-        {
-         "modId": "PlainHTMLElements:PlainHTML/image",
-         "fields": {
-          "href": "",
-          "image_src": {
-           "resKey": "0ba4c098e65dcf286d15334226c2fcf5",
-           "path": "./broccoli_files/resources/photo002-256px.gif",
-           "resType": "",
-           "webUrl": ""
-          },
-          "alt_text": ""
-         },
-         "anchor": "",
-         "dec": ""
-        }
-       ]
-      }
-     }
-    ]
-   }
-  }
- }
+    }
 }
