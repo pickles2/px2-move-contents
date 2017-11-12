@@ -13,7 +13,8 @@ class move_content{
 	private $main;
 
 	/** 環境情報 */
-	private $realpath_controot;
+	private $directory_index_primary,
+			$realpath_controot;
 
 	/**
 	 * constructor
@@ -23,6 +24,7 @@ class move_content{
 	public function __construct($main){
 		$this->main = $main;
 		$env = $this->main->get_env();
+		$this->directory_index_primary = $env['directory_index_primary'];
 		$this->realpath_controot = $env['realpath_controot'];
 	}
 
@@ -61,7 +63,7 @@ class move_content{
 
 		// コンテンツの被リンクを解決する
 		$this->main->stdout('resolve incoming links ');
-		$this->resolve_content_incoming_links($from, $to);
+		$this->resolve_content_incoming_links($pathsFromTo, $from, $to);
 		$this->main->stdout(' done.'."\n");
 
 		return $rtn;
@@ -75,6 +77,8 @@ class move_content{
 	 * @return array      ファイルの一覧
 	 */
 	private function make_content_file_list($from, $to){
+		if(preg_match('/\/$/s', $from)){ $from = $from.$this->directory_index_primary; }
+		if(preg_match('/\/$/s', $to  )){ $to   = $to  .$this->directory_index_primary; }
 
 		$pathsFromTo = array();
 
@@ -333,9 +337,15 @@ class move_content{
 	 * @param  string $to   移動先のコンテンツパス
 	 * @return boolean      実行結果
 	 */
-	private function resolve_content_incoming_links($from, $to){
+	private function resolve_content_incoming_links($pathsFromTo, $from, $to){
 		$find_contents = new find_contents($this->main);
-		$find_contents->find(function($path_current) use ($from, $to){
+		$find_contents->find(function($path_current) use ($pathsFromTo, $from, $to){
+
+			foreach($pathsFromTo as $pathFromTo){
+				if( $pathFromTo[1] == $path_current ){
+					return;
+				}
+			}
 
 			// コンテンツを更新
 			$realpath_file = $this->realpath_controot.$path_current;
@@ -377,7 +387,7 @@ class move_content{
 				}
 				return $bin_obj;
 			};
-			$realpath_files = $this->main->fs()->normalize_path($this->realpath_controot.$this->main->px2agent()->get_path_files('/'.$path_current).'guieditor.ignore/data.json');
+			$realpath_files = $this->main->fs()->normalize_path($this->realpath_controot.$this->main->px2agent()->get_path_files($path_current).'guieditor.ignore/data.json');
 			if( is_file( $realpath_files ) ){
 				$bin = $this->main->fs()->read_file( $realpath_files );
 				$bin_obj = json_decode($bin);
@@ -422,15 +432,16 @@ class move_content{
 	 * @return string       変換後のパス文字列
 	 */
 	private function resolve_incoming_path($path, $path_current, $from, $to){
+		if(preg_match('/^'.preg_quote($to, '/').'(?:\.[a-zA-Z0-9]+)?$/s', $path_current)){
+			// 対象ページ自身は変換対象にしない(処理済みなので)
+			return $pre_s.$path.$s_end;
+		}
+
 		preg_match('/^([\s]*)(.*?)([\s]*)$/s', $path, $matched);
 		$pre_s = $matched[1];
 		$path = $matched[2];
 		$s_end = $matched[3];
 
-		if(preg_match('/^'.preg_quote($to, '/').'(\.[a-zA-Z0-9]+)?$/s', '/'.$path_current)){
-			// 対象ページ自身は変換対象にしない(処理済みなので)
-			return $pre_s.$path.$s_end;
-		}
 		if( preg_match('/^#/', $path) ){
 			return $pre_s.$path.$s_end;
 		}
@@ -453,17 +464,21 @@ class move_content{
 			return $pre_s.$path.$s_end;
 		}elseif( preg_match('/^\//', $path) ){
 			$path_type = 'absolute';
-			$path_abs = $this->main->fs()->get_realpath($path, dirname('/'.$path_current));
+			$path_abs = $this->main->fs()->get_realpath($path, dirname($path_current));
 		}elseif( preg_match('/^\.\//', $path) ){
 			$path_type = 'relative_dot_slash';
-			$path_abs = $this->main->fs()->get_realpath($path, dirname('/'.$path_current));
+			$path_abs = $this->main->fs()->get_realpath($path, dirname($path_current));
 		}else{
 			$path_type = 'relative';
-			$path_abs = $this->main->fs()->get_realpath($path, dirname('/'.$path_current));
+			$path_abs = $this->main->fs()->get_realpath($path, dirname($path_current));
 		}
 		$path_abs = $this->main->fs()->normalize_path($path_abs);
 
-		$new_path_abs = $this->main->fs()->get_realpath($path_abs);
+		if( $path_abs != $from && $path_abs.$this->directory_index_primary != $from ){
+			return $pre_s.$path.$s_end;
+		}
+
+		$new_path_abs = $this->main->fs()->get_realpath($to);
 		$new_path_abs = $this->main->fs()->normalize_path($new_path_abs);
 
 		$rtn = $path;
@@ -476,13 +491,13 @@ class move_content{
 				$rtn = $new_path_abs;
 				break;
 			case 'relative_dot_slash':
-				$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname('/'.$path_current));
+				$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname($path_current));
 				$path_rel = $this->main->fs()->normalize_path($path_rel);
 				$path_rel = './'.preg_replace('/^\.\//s', '', $path_rel);
 				$rtn = $path_rel;
 				break;
 			case 'relative':
-				$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname('/'.$path_current));
+				$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname($path_current));
 				$path_rel = $this->main->fs()->normalize_path($path_rel);
 				$path_rel = preg_replace('/^\.\//s', '', $path_rel);
 				$rtn = $path_rel;

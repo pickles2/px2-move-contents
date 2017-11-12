@@ -56,7 +56,7 @@ class find_contents{
 					continue;
 				}
 
-				$callback($path_current_dir.$basename);
+				$callback('/'.$path_current_dir.$basename);
 			}
 		}
 		return true;

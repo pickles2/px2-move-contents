@@ -92,4 +92,19 @@ class px2agent{
 		return $path_controot;
 	}
 
+	/**
+	 * Pickles 2 の `get_directory_index_primary()` を仲介する
+	 * @return string 省略されるファイル名
+	 */
+	public function get_directory_index_primary(){
+		if( is_string($this->px) ){
+			// EntryScript のパスを受け取った場合
+			$directory_index_primary = $this->utils->execute_pickles2_cmd('/?PX=api.get.directory_index_primary');
+		}elseif( is_object($this->px) ){
+			// Pickles 2 オブジェクト を受け取った場合
+			$directory_index_primary = $this->px->get_directory_index_primary();
+		}
+		return $directory_index_primary;
+	}
+
 }

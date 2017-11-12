@@ -1,0 +1,26 @@
+<?php ob_start(); ?><link rel="stylesheet" href="<?= htmlspecialchars( $px->path_files('/style.css') ) ?>" /><?php $px->bowl()->send( ob_get_clean(), 'head' );?>
+<?php ob_start(); ?><script src="<?= htmlspecialchars( $px->path_files('/script.js') ) ?>"></script><?php $px->bowl()->send( ob_get_clean(), 'foot' );?>
+
+<p>Test Data</p>
+<dl>
+	<dt>リンク - 相対パス</dt>
+		<dd><a href="test1.html">test1.html</a></dd>
+	<dt>リンク - 相対パス (./)</dt>
+		<dd><a href="./test1.html">./test1.html</a></dd>
+	<dt>JavaScript</dt>
+		<dd><a href="javascript:alert(123);">javascript</a></dd>
+	<dt>data scheme</dt>
+		<dd><img src="data:" alt="data scheme" /></dd>
+	<dt>PHP</dt>
+		<dd><img src="<?php $px->path_files("/image.gif") ?>" alt="php" /></dd>
+	<dt>相対パス</dt>
+		<dd><img src="index_files/image.gif" alt="relative" /></dd>
+	<dt>相対パス (./)</dt>
+		<dd><img src="./index_files/image.gif" alt="relative_dot_slash" /></dd>
+	<dt>絶対パス</dt>
+		<dd><img src="/test1/index_files/image.gif" alt="absolute" /></dd>
+	<dt>パスの前後に改行が含まれる</dt>
+		<dd><img src="
+			index_files/image.gif
+		" alt="br" /></dd>
+</dl>

@@ -10,7 +10,7 @@ Test Data
 	<dt>リンク - 相対パス (./)</dt>
 		<dd><a href="./index.html">./index.html</a></dd>
 	<dt>リンク - 相対パス (./; index.html を省略)</dt>
-		<dd><a href="./index.html">./ -> ./index.html</a></dd>
+		<dd><a href="./">./ -> ./index.html</a></dd>
 	<dt>JavaScript</dt>
 		<dd><a href="javascript:alert(123);">javascript</a></dd>
 	<dt>data scheme</dt>

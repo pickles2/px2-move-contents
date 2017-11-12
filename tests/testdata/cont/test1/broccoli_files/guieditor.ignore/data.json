@@ -12,7 +12,7 @@
                                     "modId": "PlainHTMLElements:PlainHTML/MultiText",
                                     "fields": {
                                         "main": {
-                                            "src": "## broccoli * markdown\n\n- [./index.html](./index.html)\n- [test1.html](test1.html)\n- <a href=\"./index.html\">./</a>\n",
+                                            "src": "## broccoli * markdown\n\n- [./index.html](./index.html)\n- [test1.html](test1.html)\n- <a href=\"./\">./</a>\n",
                                             "editor": "markdown"
                                         }
                                     },

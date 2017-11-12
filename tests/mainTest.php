@@ -16,6 +16,15 @@ class mainTest extends PHPUnit_Framework_TestCase{
 	 * Pickles 2 オブジェクトを提供して実行
 	 */
 	public function testExecuteWithSupplyingPickles2Object(){
+		$this->assertTrue( $this->fs->copy_r(
+			__DIR__.'/testdata/cont/index.html',
+			__DIR__.'/testdata/standard/index.html'
+		));
+		$this->assertTrue( $this->fs->copy_r(
+			__DIR__.'/testdata/cont/test1/',
+			__DIR__.'/testdata/standard/test1/'
+		));
+
 		run_pickles2_object(function($px){
 			$px2moveContents = new tomk79\pickles2\moveContents\main($px);
 			$this->assertEquals( gettype($px2moveContents), gettype(json_decode('{}')) );
@@ -50,6 +59,11 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			$this->assertTrue( 0 < strpos( $src, '<img src="index_files/image.gif" alt="relative" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="./index_files/image.gif" alt="relative_dot_slash" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="/test_tmp_after/index_files/image.gif" alt="absolute" />' ) );
+
+			$src = $this->fs->read_file(__DIR__.'/testdata/standard/test_tmp_after/broccoli_after.html');
+			// var_dump($src);
+			$src = $this->fs->read_file(__DIR__.'/testdata/standard/test_tmp_after/broccoli_after_files/guieditor.ignore/data.json');
+			// var_dump($src);
 		});
 	}
 
