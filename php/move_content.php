@@ -54,6 +54,11 @@ class move_content{
 		$this->resolve_content_resource_links($pathsFromTo, $from, $to);
 		$this->main->stdout(' done.'."\n");
 
+		// コンテンツの `data.json` に記述されたリソースファイルのリンクを解決する
+		$this->main->stdout('resolve links in data.json ');
+		$this->resolve_content_resource_links_in_datajson($pathsFromTo, $from, $to);
+		$this->main->stdout(' done.'."\n");
+
 		// コンテンツの被リンクを解決する
 		$this->main->stdout('resolve incoming links ');
 		$this->resolve_content_incoming_links($from, $to);
@@ -167,11 +172,47 @@ class move_content{
 	}
 
 	/**
+	 * コンテンツの `data.json` に記述されたリソースファイルのリンクを解決する
+	 * @param  array $pathsFromTo 対象コンテンツのパス
+	 * @param  string $from 対象コンテンツのパス
+	 * @param  string $to   移動先のコンテンツパス
+	 * @return boolean      実行結果
+	 */
+	private function resolve_content_resource_links_in_datajson($pathsFromTo, $from, $to){
+		foreach($pathsFromTo as $fromTo){
+			if( !is_dir($this->realpath_controot.$fromTo[1]) ){
+				continue;
+			}
+			if( !is_file($this->realpath_controot.$fromTo[1].'/guieditor.ignore/data.json') ){
+				continue;
+			}
+			$realpath_file = $this->realpath_controot.$fromTo[1].'/guieditor.ignore/data.json';
+
+			$bin = $this->main->fs()->read_file( $realpath_file );
+			$bin_obj = json_decode($bin);
+			$bin_md5 = md5(json_encode($bin_obj));
+
+			foreach($bin_obj as $key=>$row){
+				if(is_string($row)){
+					$bin_obj->$key = $this->resolve_content_resource_links_in_src($bin_obj->$key, $from, $to);
+				}
+			}
+
+			$bin = json_encode($bin_obj);
+			if( $bin_md5 !== md5($bin) ){
+				$this->main->fs()->save_file( $realpath_file, $bin );
+				$this->main->stdout('.');
+			}
+		}
+		return true;
+	}
+
+	/**
 	 * コンテンツに記述されたリソースファイルのリンクを解決する
 	 * @param  string $src 対象コンテンツのソース
 	 * @param  string $from 対象コンテンツのパス
 	 * @param  string $to   移動先のコンテンツパス
-	 * @return boolean      実行結果
+	 * @return string      実行後の新しい `$src`
 	 */
 	private function resolve_content_resource_links_in_src($src, $from, $to){
 		$path_detector = new path_detector($this->main);

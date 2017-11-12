@@ -186,15 +186,6 @@ return call_user_func( function(){
 		 // PX=phpinfo
 		'picklesFramework2\commands\phpinfo::register' ,
 
-		// PX=publish
-		'picklesFramework2\commands\publish::register('.json_encode(array(
-			'paths_ignore'=> array(
-				// パブリッシュ対象から常に除外するパスを設定する。
-				// (ここに設定されたパスは、動的なプレビューは可能)
-				'/sample_pages/no_publish/*'
-			)
-		)).')' ,
-
 	);
 
 	/**
@@ -206,6 +197,11 @@ return call_user_func( function(){
 		// PX=api
 		'picklesFramework2\commands\api::register' ,
 
+		// PX=publish
+		'picklesFramework2\commands\publish::register' ,
+
+		// PX=px2dthelper
+		'tomk79\pickles2\px2dthelper\main::register' ,
 	);
 
 
@@ -225,7 +221,13 @@ return call_user_func( function(){
 		'picklesFramework2\processors\autoindex\autoindex::exec' ,
 
 		// テーマ
-		'theme'=>'picklesFramework2\theme\theme::exec' ,
+		'theme'=>'tomk79\pickles2\multitheme\theme::exec('.json_encode([
+			'param_theme_switch'=>'THEME',
+			'cookie_theme_switch'=>'THEME',
+			'path_theme_collection'=>'./px-files/themes/',
+			'attr_bowl_name_by'=>'data-contents-area',
+			'default_theme_id'=>'pickles2'
+		]).')' ,
 
 		// Apache互換のSSIの記述を解決する
 		'picklesFramework2\processors\ssi\ssi::exec' ,
@@ -270,5 +272,26 @@ return call_user_func( function(){
 	 */
 	$conf->funcs->before_output = array(
 	);
+
+
+	// -------- config for Plugins. --------
+	// その他のプラグインに対する設定を行います。
+	$conf->plugins = new stdClass;
+
+	/** config for Pickles 2 Desktop Tool. */
+	$conf->plugins->px2dt = new stdClass;
+
+	/** broccoliモジュールセットの登録 */
+	$conf->plugins->px2dt->paths_module_template = [
+		"PlainHTMLElements" => "../../../vendor/broccoli-html-editor/broccoli-module-plain-html-elements/modules/",
+		"FESS" => "../../../vendor/broccoli-html-editor/broccoli-module-fess/modules/"
+	];
+
+	/** コンテンツエリアを識別するセレクタ(複数の要素がマッチしてもよい) */
+	$conf->plugins->px2dt->contents_area_selector = '[data-contents-area]';
+
+	/** コンテンツエリアのbowl名を指定する属性名 */
+	$conf->plugins->px2dt->contents_bowl_name_by = 'data-contents-area';
+
 	return $conf;
 } );

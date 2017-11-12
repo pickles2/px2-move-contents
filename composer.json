@@ -24,7 +24,11 @@
         "tomk79/filesystem": "^1.0.0"
     },
     "require-dev": {
-        "pickles2/px-fw-2.x": "^2.0",
+        "broccoli-html-editor/broccoli-module-fess": "0.1.*",
+        "broccoli-html-editor/broccoli-module-plain-html-elements": "0.1.*",
+        "pickles2/px-fw-2.x": "dev-develop",
+        "pickles2/px2-px2dthelper": "dev-develop",
+        "pickles2/px2-multitheme": "dev-develop",
         "phpunit/phpunit": "^4.1.0"
     },
     "autoload": {
