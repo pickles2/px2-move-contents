@@ -247,6 +247,13 @@ class move_content{
 		return $src;
 	}
 
+	/**
+	 * コンテンツ内のリンクを張り替える新しいパスを生成する
+	 * @param  string $path 張り替えるパス
+	 * @param  string $from 元のパス
+	 * @param  string $to   移動先のパス
+	 * @return string       変換後のパス文字列
+	 */
 	private function resolve_path($path, $from, $to){
 		preg_match('/^([\s]*)(.*?)([\s]*)$/s', $path, $matched);
 		$pre_s = $matched[1];
@@ -330,88 +337,159 @@ class move_content{
 		$find_contents = new find_contents($this->main);
 		$find_contents->find(function($path_current) use ($from, $to){
 
+			// コンテンツを更新
 			$realpath_file = $this->realpath_controot.$path_current;
 			$bin = $this->main->fs()->read_file( $realpath_file );
 			$bin_md5 = md5($bin);
 
-			$path_detector = new path_detector($this->main);
-			$bin = $path_detector->path_detect_in_html($bin, function( $path ) use ($path_current, $from, $to){
-				preg_match('/^([\s]*)(.*?)([\s]*)$/s', $path, $matched);
-				$pre_s = $matched[1];
-				$path = $matched[2];
-				$s_end = $matched[3];
-
-				if(preg_match('/^'.preg_quote($to, '/').'(\.[a-zA-Z0-9]+)?$/s', '/'.$path_current)){
-					// 対象ページ自身は変換対象にしない(処理済みなので)
-					return $pre_s.$path.$s_end;
-				}
-				if( preg_match('/^#/', $path) ){
-					return $pre_s.$path.$s_end;
-				}
-
-				$path_type = 'relative';
-				if( preg_match('/^\<\?(?:php|\=)?/', $path) ){
-					$path_type = 'php';
-					return $pre_s.$path.$s_end;
-				}elseif( preg_match('/^[a-zA-Z0-9]+\:\/\//', $path) ){
-					$path_type = 'url';
-					return $pre_s.$path.$s_end; // TODO: 未実装
-				}elseif( preg_match('/^\/\//', $path) ){
-					$path_type = 'absolute_double_slashes';
-					return $pre_s.$path.$s_end; // TODO: 未実装
-				}elseif( preg_match('/^data\:/i', $path) ){
-					$path_type = 'data';
-					return $pre_s.$path.$s_end;
-				}elseif( preg_match('/^javascript\:/i', $path) ){
-					$path_type = 'javascript';
-					return $pre_s.$path.$s_end;
-				}elseif( preg_match('/^\//', $path) ){
-					$path_type = 'absolute';
-					$path_abs = $this->main->fs()->get_realpath($path, dirname('/'.$path_current));
-				}elseif( preg_match('/^\.\//', $path) ){
-					$path_type = 'relative_dot_slash';
-					$path_abs = $this->main->fs()->get_realpath($path, dirname('/'.$path_current));
-				}else{
-					$path_type = 'relative';
-					$path_abs = $this->main->fs()->get_realpath($path, dirname('/'.$path_current));
-				}
-				$path_abs = $this->main->fs()->normalize_path($path_abs);
-
-				$new_path_abs = $this->main->fs()->get_realpath($path_abs);
-				$new_path_abs = $this->main->fs()->normalize_path($new_path_abs);
-
-				$rtn = $path;
-				switch($path_type){
-					case 'url':
-						break;
-					case 'absolute_double_slashes':
-						break;
-					case 'absolute':
-						$rtn = $new_path_abs;
-						break;
-					case 'relative_dot_slash':
-						$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname('/'.$path_current));
-						$path_rel = $this->main->fs()->normalize_path($path_rel);
-						$path_rel = './'.preg_replace('/^\.\//s', '', $path_rel);
-						$rtn = $path_rel;
-						break;
-					case 'relative':
-						$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname('/'.$path_current));
-						$path_rel = $this->main->fs()->normalize_path($path_rel);
-						$path_rel = preg_replace('/^\.\//s', '', $path_rel);
-						$rtn = $path_rel;
-						break;
-				}
-
-				return $pre_s.$rtn.$s_end;
-			});
+			$bin = $this->resolve_content_resource_incoming_links_in_src($bin, $path_current, $from, $to);
 
 			if( $bin_md5 !== md5($bin) ){
 				$this->main->fs()->save_file( $realpath_file, $bin );
 				$this->main->stdout('.');
 			}
+
+			// data.json を更新
+			$fnc_resolve_r = function($bin_obj) use (&$fnc_resolve_r, $path_current, $from, $to){
+				foreach($bin_obj as $key=>$row){
+					if(is_object($row) || is_array($row)){
+						if( is_object($bin_obj) ){
+							$bin_obj->$key = $fnc_resolve_r($bin_obj->$key);
+						}elseif( is_array($bin_obj) ){
+							$bin_obj[$key] = $fnc_resolve_r($bin_obj[$key]);
+						}
+					}elseif(is_string($row)){
+						if( preg_match('/^(?:\.\/|\/)(?:[^\s]*)(?:\.[a-zA-Z0-9]+)$/s', $row) ){
+							// 値全体として1つのパスと認識できる場合
+							if( is_object($bin_obj) ){
+								$bin_obj->$key = $this->resolve_incoming_path($bin_obj->$key, $path_current, $from, $to);
+							}elseif( is_array($bin_obj) ){
+								$bin_obj[$key] = $this->resolve_incoming_path($bin_obj[$key], $path_current, $from, $to);
+							}
+						}else{
+							if( is_object($bin_obj) ){
+								$bin_obj->$key = $this->resolve_content_resource_incoming_links_in_src($bin_obj->$key, $path_current, $from, $to);
+							}elseif( is_array($bin_obj) ){
+								$bin_obj[$key] = $this->resolve_content_resource_incoming_links_in_src($bin_obj[$key], $path_current, $from, $to);
+							}
+						}
+					}
+				}
+				return $bin_obj;
+			};
+			$realpath_files = $this->main->fs()->normalize_path($this->realpath_controot.$this->main->px2agent()->get_path_files('/'.$path_current).'guieditor.ignore/data.json');
+			if( is_file( $realpath_files ) ){
+				$bin = $this->main->fs()->read_file( $realpath_files );
+				$bin_obj = json_decode($bin);
+				$json_encode_option = JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE;
+				$bin_md5 = md5(json_encode($bin_obj, $json_encode_option));
+
+				$bin_obj = $fnc_resolve_r($bin_obj);
+
+				$bin = json_encode($bin_obj, $json_encode_option);
+				if( $bin_md5 !== md5($bin) ){
+					$this->main->fs()->save_file( $realpath_files, $bin );
+					$this->main->stdout('.');
+				}
+			}
+
 		});
 		return true;
+	}
+
+	/**
+	 * コンテンツに記述されたリソースファイルのリンクを解決する
+	 * @param  string $src 対象コンテンツのソース
+	 * @param  string $path_current リンク元のパス
+	 * @param  string $from 対象コンテンツのパス
+	 * @param  string $to   移動先のコンテンツパス
+	 * @return string      実行後の新しい `$src`
+	 */
+	private function resolve_content_resource_incoming_links_in_src($src, $path_current, $from, $to){
+		$path_detector = new path_detector($this->main);
+		$src = $path_detector->path_detect_in_html($src, function( $path ) use ($path_current, $from, $to){
+			return $this->resolve_incoming_path($path, $path_current, $from, $to);
+		});
+		return $src;
+	}
+
+	/**
+	 * コンテンツへの被リンクを張り替える新しいパスを生成する
+	 * @param  string $path 張り替えるパス
+	 * @param  string $path_current リンク元のパス
+	 * @param  string $from 元のパス
+	 * @param  string $to   移動先のパス
+	 * @return string       変換後のパス文字列
+	 */
+	private function resolve_incoming_path($path, $path_current, $from, $to){
+		preg_match('/^([\s]*)(.*?)([\s]*)$/s', $path, $matched);
+		$pre_s = $matched[1];
+		$path = $matched[2];
+		$s_end = $matched[3];
+
+		if(preg_match('/^'.preg_quote($to, '/').'(\.[a-zA-Z0-9]+)?$/s', '/'.$path_current)){
+			// 対象ページ自身は変換対象にしない(処理済みなので)
+			return $pre_s.$path.$s_end;
+		}
+		if( preg_match('/^#/', $path) ){
+			return $pre_s.$path.$s_end;
+		}
+
+		$path_type = 'relative';
+		if( preg_match('/^\<\?(?:php|\=)?/', $path) ){
+			$path_type = 'php';
+			return $pre_s.$path.$s_end;
+		}elseif( preg_match('/^[a-zA-Z0-9]+\:\/\//', $path) ){
+			$path_type = 'url';
+			return $pre_s.$path.$s_end; // TODO: 未実装
+		}elseif( preg_match('/^\/\//', $path) ){
+			$path_type = 'absolute_double_slashes';
+			return $pre_s.$path.$s_end; // TODO: 未実装
+		}elseif( preg_match('/^data\:/i', $path) ){
+			$path_type = 'data';
+			return $pre_s.$path.$s_end;
+		}elseif( preg_match('/^javascript\:/i', $path) ){
+			$path_type = 'javascript';
+			return $pre_s.$path.$s_end;
+		}elseif( preg_match('/^\//', $path) ){
+			$path_type = 'absolute';
+			$path_abs = $this->main->fs()->get_realpath($path, dirname('/'.$path_current));
+		}elseif( preg_match('/^\.\//', $path) ){
+			$path_type = 'relative_dot_slash';
+			$path_abs = $this->main->fs()->get_realpath($path, dirname('/'.$path_current));
+		}else{
+			$path_type = 'relative';
+			$path_abs = $this->main->fs()->get_realpath($path, dirname('/'.$path_current));
+		}
+		$path_abs = $this->main->fs()->normalize_path($path_abs);
+
+		$new_path_abs = $this->main->fs()->get_realpath($path_abs);
+		$new_path_abs = $this->main->fs()->normalize_path($new_path_abs);
+
+		$rtn = $path;
+		switch($path_type){
+			case 'url':
+				break;
+			case 'absolute_double_slashes':
+				break;
+			case 'absolute':
+				$rtn = $new_path_abs;
+				break;
+			case 'relative_dot_slash':
+				$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname('/'.$path_current));
+				$path_rel = $this->main->fs()->normalize_path($path_rel);
+				$path_rel = './'.preg_replace('/^\.\//s', '', $path_rel);
+				$rtn = $path_rel;
+				break;
+			case 'relative':
+				$path_rel = $this->main->fs()->get_relatedpath($new_path_abs, dirname('/'.$path_current));
+				$path_rel = $this->main->fs()->normalize_path($path_rel);
+				$path_rel = preg_replace('/^\.\//s', '', $path_rel);
+				$rtn = $path_rel;
+				break;
+		}
+
+		return $pre_s.$rtn.$s_end;
 	}
 
 }
