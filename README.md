@@ -100,7 +100,7 @@ $result = $px2moveContents->run('/path/to/move_list.csv', $options);
 
 ## 更新履歴 - Change log
 
-### pickles2/px2-move-contents v0.0.1 (20??年??月??日)
+### pickles2/px2-move-contents v0.1.0 (2017年11月22日)
 
 - 初回リリース
 
