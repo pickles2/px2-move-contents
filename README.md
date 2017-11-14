@@ -84,6 +84,20 @@ A列のパスにあるコンテンツファイルを探し、B列のパスに移
 </table>
 
 
+## オプション - Options
+
+```php
+$result = $px2moveContents->run('/path/to/move_list.csv', $options);
+```
+
+- `$options->php->bin` : PHPコマンドのパス
+- `$options->php->ini` : php.ini のパス
+- `$options->php->extension_dir` : PHPの extension_dir のパス
+- `$options->stdout` : 標準出力先のコールバック
+- `$options->stderr` : エラー出力先のコールバック
+
+
+
 ## 更新履歴 - Change log
 
 ### pickles2/px2-move-contents v0.0.1 (20??年??月??日)

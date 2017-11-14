@@ -42,7 +42,8 @@ class move_content{
 		// 対象コンテンツファイルのリストを作成する
 		$pathsFromTo = $this->make_content_file_list($from, $to);
 		if(!is_array($pathsFromTo)){
-			$this->main->stdout('contents not found.'."\n");
+			$this->main->stdout('[ERROR] Contents file not found.'."\n");
+			$this->main->stderr('Contents file not found. '.$from.' -> '.$to);
 			return false;
 		}
 
@@ -137,11 +138,16 @@ class move_content{
 
 		// 実際の移動処理
 		foreach( $pathsFromTo as $fromTo ){
-			$this->main->stdout('    '.implode(' -> ', $fromTo)."\n");
-			$this->main->fs()->rename_f(
+			$this->main->stdout('    '.implode(' -> ', $fromTo));
+			$result = $this->main->fs()->rename_f(
 				$this->realpath_controot.$fromTo[0],
 				$this->realpath_controot.$fromTo[1]
 			);
+			if( !$result ){
+				$this->main->stdout(' [FAILED]');
+				$this->main->stderr('[FAILED] Moving file was failed. '.implode(' -> ', $fromTo));
+			}
+			$this->main->stdout("\n");
 		}
 
 		return true;
@@ -168,8 +174,10 @@ class move_content{
 			$bin = $this->resolve_content_resource_links_in_src($bin, $from, $to);
 
 			if( $bin_md5 !== md5($bin) ){
-				$this->main->fs()->save_file( $realpath_file, $bin );
-				$this->main->stdout('.');
+				$result = $this->main->fs()->save_file( $realpath_file, $bin );
+				$this->stdout_progress($result, 'Failed to save file: '.$realpath_file);
+			}else{
+				$this->stdout_progress(null);
 			}
 		}
 		return true;
@@ -229,8 +237,10 @@ class move_content{
 
 			$bin = json_encode($bin_obj, $json_encode_option);
 			if( $bin_md5 !== md5($bin) ){
-				$this->main->fs()->save_file( $realpath_file, $bin );
-				$this->main->stdout('.');
+				$result = $this->main->fs()->save_file( $realpath_file, $bin );
+				$this->stdout_progress($result, 'Failed to save file: '.$realpath_file);
+			}else{
+				$this->stdout_progress(null);
 			}
 		}
 		return true;
@@ -355,8 +365,10 @@ class move_content{
 			$bin = $this->resolve_content_resource_incoming_links_in_src($bin, $path_current, $from, $to);
 
 			if( $bin_md5 !== md5($bin) ){
-				$this->main->fs()->save_file( $realpath_file, $bin );
-				$this->main->stdout('.');
+				$result = $this->main->fs()->save_file( $realpath_file, $bin );
+				$this->stdout_progress($result, 'Failed to save file: '.$realpath_file);
+			}else{
+				$this->stdout_progress(null);
 			}
 
 			// data.json を更新
@@ -398,8 +410,10 @@ class move_content{
 
 				$bin = json_encode($bin_obj, $json_encode_option);
 				if( $bin_md5 !== md5($bin) ){
-					$this->main->fs()->save_file( $realpath_files, $bin );
-					$this->main->stdout('.');
+					$result = $this->main->fs()->save_file( $realpath_files, $bin );
+					$this->stdout_progress($result, 'Failed to save file: '.$realpath_files);
+				}else{
+					$this->stdout_progress(null);
 				}
 			}
 
@@ -505,6 +519,23 @@ class move_content{
 		}
 
 		return $pre_s.$rtn.$s_end;
+	}
+
+	/**
+	 * 進捗を標準出力する
+	 */
+	private function stdout_progress($result, $errmsg = ''){
+		if( is_null($result) ){
+			$this->main->stdout('-');
+			return;
+		}
+		if($result){
+			$this->main->stdout('*');
+		}else{
+			$this->main->stdout('!');
+			$this->main->stderr($errmsg);
+		}
+		return;
 	}
 
 }

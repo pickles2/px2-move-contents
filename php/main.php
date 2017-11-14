@@ -139,7 +139,8 @@ class main{
 		$this->stdout("\n");
 
 		if( !is_file($realpath_csv) || !is_readable($realpath_csv) ){
-			$this->stdout('CSV is not exists, or not readable.'."\n");
+			$this->stdout('[ERROR] CSV is not exists, or not readable. '.$realpath_csv."\n");
+			$this->stderr('CSV is not exists, or not readable. '.$realpath_csv);
 			return false;
 		}
 		$csv = $this->fs->read_csv($realpath_csv);
@@ -167,8 +168,24 @@ class main{
 	 * @return void このメソッドは値を返しません。
 	 */
 	public function stdout($msg){
-		echo $msg;
-		flush();
+		if( @is_callable($options->stdout) ){
+			$options->stdout($msg);
+		}else{
+			echo $msg;
+			flush();
+		}
+		return;
+	}
+
+	/**
+	 * エラー出力
+	 * @param  string $msg 出力するメッセージ
+	 * @return void このメソッドは値を返しません。
+	 */
+	public function stderr($msg){
+		if( @is_callable($options->stderr) ){
+			$options->stderr('[ERROR] '.$msg);
+		}
 		return;
 	}
 
