@@ -28,3 +28,9 @@ Test Data
 			test1_files/image.gif
 		" alt="br" /></dd>
 </dl>
+
+- [./broccoli.html](./broccoli.html)
+- [broccoli.html](broccoli.html "broccoli")
+- [./index.html](./index.html)
+- ![テスト画像1 ./test1_files/](./test1_files/image.gif "テスト画像1")
+- ![テスト画像2 ./test1_files/](./test1_files/image.gif)

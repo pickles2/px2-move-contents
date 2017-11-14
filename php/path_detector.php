@@ -21,6 +21,34 @@ class path_detector{
 	}
 
 	/**
+	 * Markdownファイル中のパスを解決
+	 */
+	public function path_detect_in_md( $src, $get_new_path ){
+
+		// リンクとイメージを処理
+		$tmp_src = $src;
+		$src = '';
+
+		while(1){
+			if(!preg_match('/^(.*?)\[(.*?)\]\((.*?)(\s+".*?")?\)(.*)$/s', $tmp_src, $matched)){
+				$src .= $tmp_src;
+				break;
+			}
+			$src .= $matched[1];
+			$label = $matched[2];
+			$path = $get_new_path($matched[3]);
+			$title = $matched[4];
+			$tmp_src = $matched[5];
+
+			$src .= '['.$label.']('.$path.$title.')';
+
+			continue;
+		}
+
+		return $this->path_detect_in_html($src, $get_new_path);
+	}
+
+	/**
 	 * HTMLファイル中のパスを解決
 	 */
 	public function path_detect_in_html( $src, $get_new_path ){

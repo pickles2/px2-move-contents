@@ -245,7 +245,7 @@ class move_content{
 	 */
 	private function resolve_content_resource_links_in_src($src, $from, $to){
 		$path_detector = new path_detector($this->main);
-		$src = $path_detector->path_detect_in_html($src, function( $path ) use ($from, $to){
+		$src = $path_detector->path_detect_in_md($src, function( $path ) use ($from, $to){
 			return $this->resolve_path($path, $from, $to);
 		});
 		return $src;
@@ -417,7 +417,7 @@ class move_content{
 	 */
 	private function resolve_content_resource_incoming_links_in_src($src, $path_current, $from, $to){
 		$path_detector = new path_detector($this->main);
-		$src = $path_detector->path_detect_in_html($src, function( $path ) use ($path_current, $from, $to){
+		$src = $path_detector->path_detect_in_md($src, function( $path ) use ($path_current, $from, $to){
 			return $this->resolve_incoming_path($path, $path_current, $from, $to);
 		});
 		return $src;

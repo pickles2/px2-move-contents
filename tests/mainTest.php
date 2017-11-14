@@ -50,6 +50,12 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			$this->assertTrue( 0 < strpos( $src, '<img src="abc_files/image.gif" alt="relative" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="./abc_files/image.gif" alt="relative_dot_slash" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="/test_tmp_after/abc_files/image.gif" alt="absolute" />' ) );
+			$this->assertTrue( 0 < strpos( $src, '- [./broccoli.html](./broccoli_after.html)' ) );
+			$this->assertTrue( 0 < strpos( $src, '- [broccoli.html](broccoli_after.html "broccoli")' ) );
+			$this->assertTrue( 0 < strpos( $src, '- [./test1.html](./index.html)' ) );
+			$this->assertTrue( 0 < strpos( $src, '- ![テスト画像1 ./index_files/](./abc_files/image.gif "テスト画像1")' ) );
+			$this->assertTrue( 0 < strpos( $src, '- ![テスト画像2 ./index_files/](./abc_files/image.gif)' ) );
+
 
 			$src = $this->fs->read_file(__DIR__.'/testdata/standard/test_tmp_after/index.html.md');
 			// var_dump($src);
@@ -59,6 +65,11 @@ class mainTest extends PHPUnit_Framework_TestCase{
 			$this->assertTrue( 0 < strpos( $src, '<img src="index_files/image.gif" alt="relative" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="./index_files/image.gif" alt="relative_dot_slash" />' ) );
 			$this->assertTrue( 0 < strpos( $src, '<img src="/test_tmp_after/index_files/image.gif" alt="absolute" />' ) );
+			$this->assertTrue( 0 < strpos( $src, '- [./broccoli.html](./broccoli_after.html)' ) );
+			$this->assertTrue( 0 < strpos( $src, '- [broccoli.html](broccoli_after.html "broccoli")' ) );
+			$this->assertTrue( 0 < strpos( $src, '- [./index.html](./abc.html)' ) );
+			$this->assertTrue( 0 < strpos( $src, '- ![テスト画像1 ./test1_files/](./index_files/image.gif "テスト画像1")' ) );
+			$this->assertTrue( 0 < strpos( $src, '- ![テスト画像2 ./test1_files/](./index_files/image.gif)' ) );
 
 			$src = $this->fs->read_file(__DIR__.'/testdata/standard/test_tmp_after/broccoli_after.html');
 			// var_dump($src);
