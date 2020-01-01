@@ -100,7 +100,7 @@ $result = $px2moveContents->run('/path/to/move_list.csv', $options);
 
 ## 更新履歴 - Change log
 
-### pickles2/px2-move-contents v0.1.1 (リリース日未定)
+### pickles2/px2-move-contents v0.1.1 (2020年1月2日)
 
 - PHP 7.4 に対応した。
 
@@ -111,7 +111,7 @@ $result = $px2moveContents->run('/path/to/move_list.csv', $options);
 
 ## ライセンス - License
 
-Copyright (c)2001-2019 Tomoya Koyanagi, and Pickles 2 Project<br />
+Copyright (c)2001-2020 Tomoya Koyanagi, and Pickles 2 Project<br />
 MIT License https://opensource.org/licenses/mit-license.php
 
 
